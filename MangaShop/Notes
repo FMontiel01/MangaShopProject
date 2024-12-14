@@ -1,6 +1,0 @@
-1. Add Manga to Inventory
-    Author, Title, Genre, Price, Quantity
-2. Search Manga
-    Author, Title, Genre
-3. Manga Sold
-    Which will decrease the quantity of the manga in the inventory
