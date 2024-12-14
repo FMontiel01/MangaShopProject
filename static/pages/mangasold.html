@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Manga Sold</title>
+    <link rel="stylesheet" href="../css/search.css">
+</head>
+<body class="gradient-background">
+  <h1>Manga Sold</h1>
+  <form action="/record_manga_sold" method="POST" onsubmit="handleMangaSold(event)">
+    <label for="title">Manga Title:</label>
+    <input type="text" id="title" name="title" required><br>
+    <label for="quantity">Quantity Sold:</label>
+    <input type="number" id="quantity" name="quantity" required><br>
+    <button type="submit">Submit</button>
+  </form>
+    <button onclick="window.location.href='/'">Go Back</button>
+
+
+  <script>
+    function handleMangaSold(event) {
+      event.preventDefault();
+      const form = event.target;
+      const formData = new FormData(form);
+      const data = {};
+      formData.forEach((value, key) => {
+        data[key] = value;
+      });
+
+      fetch('/record_manga_sold', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(data => {
+        alert(data.message);
+        form.reset();
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    }
+  </script>
+</body>
+</html>
