@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Manga</title>
+    <link rel="stylesheet" href="../css/search.css">
+</head>
+<body class="gradient-background">
+    <h1>Search Manga</h1>
+    <form action="/search_manga" method="GET" onsubmit="handleFormSubmit(event)">
+        <label for="title">Manga Title:</label>
+        <input type="text" id="title" name="title">
+        <button type="submit" class="button-64"><span class="text">Search</span></button>
+    </form>
+
+    <form action="/search_manga_by_genre" method="GET" onsubmit="handleFormSubmit(event)">
+        <label for="genre">Manga Genre:</label>
+        <input type="text" id="genre" name="genre">
+        <button type="submit" class="button-64"><span class="text">Search by Genre</span></button>
+    </form>
+    <button class="button-64" onclick="window.location.href='/'"><span class="text">Go Back</span></button>
+
+    <div id="results"></div>
+
+    <script>
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            const params = new URLSearchParams(formData).toString();
+            const action = form.action;
+
+            fetch(`${action}?${params}`)
+                .then(response => response.json())
+                .then(data => {
+                    const resultsDiv = document.getElementById('results');
+                    resultsDiv.innerHTML = '';
+
+                    if (Array.isArray(data)) {
+                        data.forEach(manga => {
+                            const mangaDiv = document.createElement('div');
+                            mangaDiv.classList.add('manga-result');
+                            mangaDiv.innerHTML = `
+                                <h2>${manga.title}</h2>
+                                <p><strong>Author:</strong> ${manga.author}</p>
+                                <p><strong>Genre:</strong> ${manga.genre}</p>
+                                <p><strong>Price:</strong> $${manga.price}</p>
+                                <p><strong>Quantity:</strong> ${manga.quantity}</p>
+                            `;
+                            resultsDiv.appendChild(mangaDiv);
+                        });
+                    } else if (data.error) {
+                        resultsDiv.innerHTML = `<p>${data.error}</p>`;
+                    } else {
+                        const mangaDiv = document.createElement('div');
+                        mangaDiv.classList.add('manga-result');
+                        mangaDiv.innerHTML = `
+                            <h2>${data.title}</h2>
+                            <p><strong>Author:</strong> ${data.author}</p>
+                            <p><strong>Genre:</strong> ${data.genre}</p>
+                            <p><strong>Price:</strong> $${data.price}</p>
+                            <p><strong>Quantity:</strong> ${data.quantity}</p>
+                        `;
+                        resultsDiv.appendChild(mangaDiv);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+    </script>
+</body>
+</html>
